@@ -1,0 +1,38 @@
+# Load necessary libraries
+library(ggplot2)  # For data visualization
+library(tidyr)    # For reshaping data
+
+# Load the CSV file
+data <- read.csv("stats.csv", header = TRUE)
+
+# Check and print column names
+print(colnames(data))
+
+# Trim whitespace from column names (if needed)
+colnames(data) <- trimws(colnames(data))
+
+# Rename columns for easier access
+colnames(data) <- c("Time_min", "Voltage_1", "Voltage_2", "Voltage_3", "Voltage_4", "Voltage_5")
+
+# Display the first few rows of the dataset
+head(data)
+
+# Summary statistics of the dataset
+summary(data)
+
+# Reshape data for plotting
+data_long <- pivot_longer(data, cols = starts_with("Voltage"),
+                          names_to = "Voltage_Type",
+                          values_to = "Voltage")
+
+# Example plot: Voltage vs Time
+ggplot(data_long, aes(x = Time_min, y = Voltage, color = Voltage_Type)) +
+  geom_line() +  # For line plot
+  theme_minimal() +
+  labs(title = "Voltage vs Time",
+       x = "Time (min)",
+       y = "Voltage (V)",
+       color = "Voltage Type")
+
+# Save the plot (optional)
+ggsave("voltage_vs_time.png")  # Change the filename as needed
